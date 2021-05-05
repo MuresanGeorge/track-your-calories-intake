@@ -30,13 +30,6 @@ public class Ingredient {
     @ManyToOne(fetch = FetchType.LAZY)
     private Recipe recipe;
 
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
-public class Ingredient {
-
-    private long id;
-
     private String carbohydrates;
 
     private String proteins;
