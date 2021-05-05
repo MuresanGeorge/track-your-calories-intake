@@ -27,8 +27,19 @@ public class Ingredient {
     @NotBlank(message = "The ingredient should have a name")
     private String name;
 
+    /**
+     * Quantity will be a request param used in ingredient service for determine the correct amount of carbs, proteins,
+     * fats and so on ...
+     * Each ingredient will be stored in db weighing 100g
+     */
+//    @Positive(message = "The quantity should be greater than 0")
+//    private int quantity;
+
     @ManyToOne(fetch = FetchType.LAZY)
     private Recipe recipe;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Meal meal;
 
     private String carbohydrates;
 

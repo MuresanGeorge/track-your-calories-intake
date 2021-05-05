@@ -1,14 +1,17 @@
 package com.george.tracker.model;
 
+import com.sun.xml.bind.v2.TODO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
@@ -36,8 +39,12 @@ public class Recipe {
             cascade = CascadeType.ALL)
     private List<Ingredient> ingredients;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Consumption consumption;
+
     private String calories;
 
+    //TODO: move this logic in a specific service
     private String getTotalNumberOfCalories() {
         int totalNumberOfCalories = 0;
 

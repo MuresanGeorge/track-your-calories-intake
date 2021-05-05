@@ -4,6 +4,7 @@ import com.george.tracker.exception.IngredientNotFoundException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.FieldError;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -59,6 +60,17 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return handleExceptionInternal(ex, apiError, headers, HttpStatus.METHOD_NOT_ALLOWED, request);
     }
 
+    @Override
+    protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex,
+                                                                  HttpHeaders headers, HttpStatus status,
+                                                                  WebRequest request) {
+        String error = ex.getCause().getMessage();
+        ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST.value(), error, LocalDateTime.now(),
+                "Change the value type for specified field");
+        return handleExceptionInternal(ex, apiError, headers, HttpStatus.BAD_REQUEST, request);
+
+    }
+
     @ExceptionHandler({MethodArgumentTypeMismatchException.class})
     public ResponseEntity<ApiError> handleMethodArgumentTypeMismatch(MethodArgumentTypeMismatchException ex) {
         String error = ex.getName() + " should be " + ex.getRequiredType().getName();
@@ -66,5 +78,4 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 "Provide the correct type ");
         return new ResponseEntity<>(apiError, HttpStatus.BAD_REQUEST);
     }
-
 }
