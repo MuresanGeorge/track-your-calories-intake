@@ -1,5 +1,6 @@
 package com.george.tracker.exception.handler;
 
+import com.george.tracker.exception.ConsumptionNotFoundException;
 import com.george.tracker.exception.IngredientNotFoundException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -25,7 +26,17 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<ApiError> handleIngredientNotFound(Exception ex) {
         ApiError apiError = new ApiError();
         apiError.setError(ex.getMessage());
-        apiError.setMessage("Provide the correct ingredient name");
+        apiError.setMessage("Provide the correct data to find the ingredient");
+        apiError.setStatus(HttpStatus.NOT_FOUND.value());
+        apiError.setTimestamp(LocalDateTime.now());
+        return new ResponseEntity<>(apiError, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler({ConsumptionNotFoundException.class})
+    public ResponseEntity<ApiError> handleConsumptionNotFound(Exception ex) {
+        ApiError apiError = new ApiError();
+        apiError.setError(ex.getMessage());
+        apiError.setMessage("Provide the correct data to find the consumption");
         apiError.setStatus(HttpStatus.NOT_FOUND.value());
         apiError.setTimestamp(LocalDateTime.now());
         return new ResponseEntity<>(apiError, HttpStatus.NOT_FOUND);

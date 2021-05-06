@@ -35,7 +35,8 @@ public class Consumption {
 
     @OneToMany(
             mappedBy = "consumption",
-            cascade = CascadeType.ALL)
+            cascade = CascadeType.ALL,
+            orphanRemoval = true)
     private List<Meal> meals;
 
     @OneToMany(

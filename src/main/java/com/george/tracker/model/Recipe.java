@@ -1,6 +1,5 @@
 package com.george.tracker.model;
 
-import com.sun.xml.bind.v2.TODO;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -42,18 +41,5 @@ public class Recipe {
     @ManyToOne(fetch = FetchType.LAZY)
     private Consumption consumption;
 
-    private String calories;
-
-    //TODO: move this logic in a specific service
-    private String getTotalNumberOfCalories() {
-        int totalNumberOfCalories = 0;
-
-        for (Ingredient i : this.ingredients) {
-            int caloriesFromFats = Integer.parseInt(i.getFats()) * Integer.parseInt(Macronutrient.FAT.getValue());
-            int caloriesFromCarbohydrates = Integer.parseInt(i.getCarbohydrates()) * Integer.parseInt(Macronutrient.CARBOHYDRATE.getValue());
-            int caloriesFromProteins = Integer.parseInt(i.getProteins()) * Integer.parseInt(Macronutrient.PROTEIN.getValue());
-            totalNumberOfCalories += caloriesFromFats + caloriesFromCarbohydrates + caloriesFromProteins;
-        }
-        return String.valueOf(totalNumberOfCalories);
-    }
+    private int calories;
 }
