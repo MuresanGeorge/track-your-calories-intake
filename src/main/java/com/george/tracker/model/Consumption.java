@@ -31,7 +31,7 @@ public class Consumption {
     private int desiredDailyIntake;
 
     @FutureOrPresent(message = "The consumption date should be today or in the future")
-    private LocalDate timestamp;
+    private LocalDate creationDate;
 
     @OneToMany(
             mappedBy = "consumption",

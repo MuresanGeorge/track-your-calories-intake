@@ -45,16 +45,16 @@ public class ConsumptionService {
             }
         }
         consumption.setDesiredDailyIntake(dailyIntake);
-        consumption.setTimestamp(LocalDate.now());
+        consumption.setCreationDate(LocalDate.now());
         consumption.setMeals(mealsOfTheDay);
         consumption.setRecipes(recipesOfTheDay);
         consumptionRepository.save(consumption);
     }
 
     //TODO verify this
-    public int getTotalAmountOfCalories(LocalDate timestamp) {
-        Consumption consumption = consumptionRepository.findByTimestamp(timestamp)
-                .orElseThrow(() -> new ConsumptionNotFoundException("Consumption with " + timestamp + "not found"));
+    public int getTotalAmountOfCalories(LocalDate creationDate) {
+        Consumption consumption = consumptionRepository.findByCreationDate(creationDate)
+                .orElseThrow(() -> new ConsumptionNotFoundException("Consumption with " + creationDate + "not found"));
         int totalAmountOfCalories = 0;
         for (Recipe r : consumption.getRecipes()) {
             totalAmountOfCalories += recipeService.getTotalNumberOfCaloriesInRecipe(r);

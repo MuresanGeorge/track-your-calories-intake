@@ -10,5 +10,5 @@ import java.util.Optional;
 @Repository
 public interface ConsumptionRepository extends JpaRepository<Consumption, Long> {
 
-    Optional<Consumption> findByTimestamp(LocalDate timestamp);
+    Optional<Consumption> findByCreationDate(LocalDate creationDate);
 }

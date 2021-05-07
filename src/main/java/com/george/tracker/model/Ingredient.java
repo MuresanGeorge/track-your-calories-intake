@@ -13,6 +13,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Positive;
+import javax.validation.constraints.PositiveOrZero;
 
 @Data
 @AllArgsConstructor
@@ -42,11 +43,15 @@ public class Ingredient {
     @ManyToOne(fetch = FetchType.LAZY)
     private Meal meal;
 
-    private String carbohydrates;
+    @PositiveOrZero(message = "The amount of carbohydrates should be positive")
+    private int carbohydrates;
 
-    private String proteins;
+    @PositiveOrZero(message = "The amount of proteins should be positive")
+    private int proteins;
 
-    private String fats;
+    @PositiveOrZero(message = "The amount of fats should be positive")
+    private int fats;
 
-    private String fibers;
+    @PositiveOrZero(message = "The amount of fibers should be positive")
+    private int fibers;
 }

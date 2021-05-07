@@ -31,9 +31,9 @@ public class IngredientService {
         int totalNumberOfCalories = 0;
 
         for (Ingredient i : ingredients) {
-            int caloriesFromFats = Integer.parseInt(i.getFats()) * Integer.parseInt(Macronutrient.FAT.getValue());
-            int caloriesFromCarbohydrates = Integer.parseInt(i.getCarbohydrates()) * Integer.parseInt(Macronutrient.CARBOHYDRATE.getValue());
-            int caloriesFromProteins = Integer.parseInt(i.getProteins()) * Integer.parseInt(Macronutrient.PROTEIN.getValue());
+            int caloriesFromFats = (i.getFats()) * Integer.parseInt(Macronutrient.FAT.getValue());
+            int caloriesFromCarbohydrates = (i.getCarbohydrates()) * Integer.parseInt(Macronutrient.CARBOHYDRATE.getValue());
+            int caloriesFromProteins = (i.getProteins()) * Integer.parseInt(Macronutrient.PROTEIN.getValue());
             totalNumberOfCalories += caloriesFromFats + caloriesFromCarbohydrates + caloriesFromProteins;
         }
         return totalNumberOfCalories;

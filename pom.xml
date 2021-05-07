@@ -20,6 +20,7 @@
     <properties>
         <java.version>11</java.version>
         <swagger.version>2.9.2</swagger.version>
+        <liquibase.version>3.9.0</liquibase.version>
     </properties>
 
     <dependencies>
@@ -57,12 +58,29 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
         </dependency>
+        <!--        JPA-->
+
+        <!--        Database versioning-->
+        <dependency>
+            <groupId>org.liquibase</groupId>
+            <artifactId>liquibase-core</artifactId>
+            <version>${liquibase.version}</version>
+        </dependency>
+        <!--        Database versioning-->
+
+        <!--        Database-->
         <dependency>
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
             <scope>runtime</scope>
         </dependency>
-        <!--        JPA-->
+
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+        <!--        Database-->
 
         <!--        Mapper-->
         <dependency>
@@ -85,6 +103,7 @@
         </dependency>
         <!--        Validations-->
 
+        <!--        Testing-->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
@@ -100,6 +119,7 @@
             <artifactId>htmlunit-driver</artifactId>
             <scope>test</scope>
         </dependency>
+        <!--        Testing-->
     </dependencies>
 
     <build>
