@@ -1,8 +1,11 @@
 package com.george.tracker.service;
 
+import com.george.tracker.model.Ingredient;
 import com.george.tracker.model.Meal;
 import com.george.tracker.repository.MealRepository;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class MealService {
@@ -16,7 +19,16 @@ public class MealService {
         this.ingredientService = ingredientService;
     }
 
-    public void create(Meal meal) {
+    public void create(String mealName, List<Ingredient> ingredients) {
+        Meal meal = new Meal();
+        meal.setName(mealName);
+
+        if (!ingredients.isEmpty()) {
+            for (Ingredient i : ingredients) {
+                meal.addIngredient(i);
+                ingredientService.create(i);
+            }
+        }
         mealRepository.save(meal);
     }
 

@@ -33,6 +33,8 @@ public class Ingredient {
      * In the future quantity will be a request param used in ingredient service for determine the correct amount of
      * carbs, proteins,fats and so on ...
      * Each ingredient will be stored in db weighing 100g (first time the ingredient will be scraped from google search API)
+     * and then every time when you introduce a ingredient in a meal, you will search for it in db firstly, and you will apply the
+     * formula depending on quantity to find out carbs, proteins..
      */
     @Positive(message = "The quantity should be greater than 0")
     private int quantity;

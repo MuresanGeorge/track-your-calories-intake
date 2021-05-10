@@ -18,8 +18,8 @@ public class IngredientService {
         this.ingredientRepository = ingredientRepository;
     }
 
-    public void create(Ingredient ingredient) {
-        ingredientRepository.save(ingredient);
+    public Ingredient create(Ingredient ingredient) {
+        return ingredientRepository.save(ingredient);
     }
 
     public Ingredient readIngredient(String name) {
@@ -30,11 +30,13 @@ public class IngredientService {
     public int getTotalNumberOfCalories(List<Ingredient> ingredients) {
         int totalNumberOfCalories = 0;
 
-        for (Ingredient i : ingredients) {
-            int caloriesFromFats = (i.getFats()) * Integer.parseInt(Macronutrient.FAT.getValue());
-            int caloriesFromCarbohydrates = (i.getCarbohydrates()) * Integer.parseInt(Macronutrient.CARBOHYDRATE.getValue());
-            int caloriesFromProteins = (i.getProteins()) * Integer.parseInt(Macronutrient.PROTEIN.getValue());
-            totalNumberOfCalories += caloriesFromFats + caloriesFromCarbohydrates + caloriesFromProteins;
+        if (!ingredients.isEmpty()) {
+            for (Ingredient i : ingredients) {
+                int caloriesFromFats = (i.getFats()) * Integer.parseInt(Macronutrient.FAT.getValue());
+                int caloriesFromCarbohydrates = (i.getCarbohydrates()) * Integer.parseInt(Macronutrient.CARBOHYDRATE.getValue());
+                int caloriesFromProteins = (i.getProteins()) * Integer.parseInt(Macronutrient.PROTEIN.getValue());
+                totalNumberOfCalories += caloriesFromFats + caloriesFromCarbohydrates + caloriesFromProteins;
+            }
         }
         return totalNumberOfCalories;
     }

@@ -6,9 +6,9 @@ import com.george.tracker.model.Meal;
 import com.george.tracker.model.Recipe;
 import com.george.tracker.repository.ConsumptionRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -27,27 +27,24 @@ public class ConsumptionService {
         this.recipeService = recipeService;
     }
 
+//    @Transactional
     public void create(int dailyIntake, List<Meal> meals, List<Recipe> recipes) {
         Consumption consumption = new Consumption();
-        List<Meal> mealsOfTheDay = new ArrayList<>();
-        List<Recipe> recipesOfTheDay = new ArrayList<>();
 
         if (!meals.isEmpty()) {
             for (Meal m : meals) {
-                mealService.create(m);
-                mealsOfTheDay.add(m);
+                consumption.addMeal(m);
+                mealService.create(m.getName(), m.getIngredients());
             }
         }
         if (!recipes.isEmpty()) {
             for (Recipe r : recipes) {
-                recipeService.create(r.getName(), r.getDescription(), r.getIngredients());
-                recipesOfTheDay.add(r);
+                consumption.addRecipe(r);
+//                recipeService.create(r.getName(), r.getDescription(), r.getIngredients());
             }
         }
         consumption.setDesiredDailyIntake(dailyIntake);
         consumption.setCreationDate(LocalDate.now());
-        consumption.setMeals(mealsOfTheDay);
-        consumption.setRecipes(recipesOfTheDay);
         consumptionRepository.save(consumption);
     }
 

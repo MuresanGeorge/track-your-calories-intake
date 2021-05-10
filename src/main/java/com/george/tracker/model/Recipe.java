@@ -14,6 +14,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -36,10 +37,15 @@ public class Recipe {
     @OneToMany(
             mappedBy = "recipe",
             cascade = CascadeType.ALL)
-    private List<Ingredient> ingredients;
+    private List<Ingredient> ingredients = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Consumption consumption;
 
     private int calories;
+
+    public void addIngredient(Ingredient ingredient) {
+        ingredients.add(ingredient);
+        ingredient.setRecipe(this);
+    }
 }

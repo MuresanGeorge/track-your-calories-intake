@@ -24,6 +24,13 @@ public class RecipeService {
         recipe.setCalories(ingredientService.getTotalNumberOfCalories(ingredients));
         recipe.setName(name);
         recipe.setDescription(description);
+
+        if (!ingredients.isEmpty()) {
+            for (Ingredient i : ingredients) {
+                recipe.addIngredient(i);
+                ingredientService.create(i);
+            }
+        }
         recipe.setIngredients(ingredients);
         recipeRepository.save(recipe);
     }

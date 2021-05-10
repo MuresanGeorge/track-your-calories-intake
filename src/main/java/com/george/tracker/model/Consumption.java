@@ -14,6 +14,7 @@ import javax.persistence.Table;
 import javax.validation.constraints.FutureOrPresent;
 import javax.validation.constraints.Positive;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Data
@@ -37,10 +38,25 @@ public class Consumption {
             mappedBy = "consumption",
             cascade = CascadeType.ALL,
             orphanRemoval = true)
-    private List<Meal> meals;
+    private List<Meal> meals = new ArrayList<>();
 
     @OneToMany(
             mappedBy = "consumption",
             cascade = CascadeType.ALL)
-    private List<Recipe> recipes;
+    private List<Recipe> recipes = new ArrayList<>();
+
+    public void addMeal(Meal meal) {
+        meals.add(meal);
+        meal.setConsumption(this);
+    }
+
+    public void addRecipe(Recipe recipe) {
+        recipes.add(recipe);
+        recipe.setConsumption(this);
+    }
+
+    public void removeMeal(Meal meal) {
+        meals.remove(meal);
+        meal.setConsumption(null);
+    }
 }
