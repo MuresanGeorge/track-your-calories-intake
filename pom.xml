@@ -103,6 +103,13 @@
         </dependency>
         <!--        Validations-->
 
+        <!--        Calling external APIs asynchronously(alternative to RestTemplate)-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-webflux</artifactId>
+        </dependency>
+        <!--        Calling external APIs asynchronously(alternative to RestTemplate)-->
+
         <!--        Testing-->
         <dependency>
             <groupId>org.springframework.boot</groupId>

@@ -30,19 +30,19 @@ public class Meal {
 
     private String name;
 
-    @OneToMany(
-            mappedBy = "meal",
-            cascade = CascadeType.ALL
-    )
-    private List<Ingredient> ingredients = new ArrayList<>();
+//    @OneToMany(
+//            mappedBy = "meal",
+//            cascade = CascadeType.ALL
+//    )
+//    private List<Ingredient> ingredients = new ArrayList<>();
 
     @ToString.Exclude
     @ManyToOne(fetch = FetchType.LAZY)
     private Consumption consumption;
 
-    public void addIngredient(Ingredient ingredient) {
-        ingredients.add(ingredient);
-        ingredient.setMeal(this);
-    }
+//    public void addIngredient(Ingredient ingredient) {
+//        ingredients.add(ingredient);
+//        ingredient.setMeal(this);
+//    }
 }
 

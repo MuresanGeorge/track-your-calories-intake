@@ -6,6 +6,8 @@ db:
   hostname: localhost
   name: macro
   port: 5432
+api:
+  key: jJ5oUIbJ4BvrTwgSx5ai5tDydhBRbvrwlB84GRMr
 
 spring:
   datasource:

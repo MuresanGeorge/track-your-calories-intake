@@ -26,7 +26,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<ApiError> handleIngredientNotFound(Exception ex) {
         ApiError apiError = new ApiError();
         apiError.setError(ex.getMessage());
-        apiError.setMessage("Provide the correct data to find the ingredient");
+        apiError.setMessage("Provide the correct name to find the ingredient");
         apiError.setStatus(HttpStatus.NOT_FOUND.value());
         apiError.setTimestamp(LocalDateTime.now());
         return new ResponseEntity<>(apiError, HttpStatus.NOT_FOUND);

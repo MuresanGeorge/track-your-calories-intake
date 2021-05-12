@@ -1,7 +1,11 @@
 server:
   port: 8080
+api:
+  key: jJ5oUIbJ4BvrTwgSx5ai5tDydhBRbvrwlB84GRMr
 
 spring:
+  liquibase:
+    enabled: false
   h2:
     console:
       enabled: true
@@ -13,3 +17,11 @@ spring:
     password:
   jpa:
     database-platform: org.hibernate.dialect.H2Dialect
+    properties:
+      javax:
+        persistance:
+          schema-generation:
+            scripts:
+              action: create
+              create-target: create.sql
+              create-source: metadata

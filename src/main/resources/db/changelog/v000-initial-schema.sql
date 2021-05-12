@@ -12,7 +12,7 @@ CREATE TABLE public.consumption
 CREATE TABLE public.meal
 (
     id BIGINT GENERATED ALWAYS AS IDENTITY,
-    name VARCHAR(255),
+    name VARCHAR,
     consumption_id INTEGER,
 
     CONSTRAINT meal_pkey PRIMARY KEY (id),
@@ -23,8 +23,8 @@ CREATE TABLE public.meal
 CREATE TABLE public.recipe
 (
     id BIGINT GENERATED ALWAYS AS IDENTITY,
-    name VARCHAR(255) NOT NULL,
-    description VARCHAR(255) NOT NULL,
+    name VARCHAR NOT NULL,
+    description VARCHAR NOT NULL,
     calories INTEGER,
     consumption_id INTEGER,
 
@@ -36,17 +36,13 @@ CREATE TABLE public.recipe
 CREATE TABLE public.ingredient
 (
     id BIGINT GENERATED ALWAYS AS IDENTITY,
-    name VARCHAR(255) NOT NULL,
-    quantity INTEGER,
+    name VARCHAR NOT NULL,
+    brand VARCHAR,
     carbohydrates INTEGER,
     proteins INTEGER,
     fats INTEGER,
     fibers INTEGER,
-    recipe_id INTEGER,
-    meal_id INTEGER,
 
     CONSTRAINT ingredient_pkey PRIMARY KEY (id),
-    CONSTRAINT ingredient_name_key UNIQUE (name),
-    CONSTRAINT fk_ingredient_recipe FOREIGN KEY (recipe_id) REFERENCES public.recipe (id),
-    CONSTRAINT fk_ingredient_meal FOREIGN KEY (meal_id) REFERENCES public.meal (id)
+    CONSTRAINT ingredient_name_key UNIQUE (name)
 );

@@ -2,6 +2,7 @@ package com.george.tracker.service;
 
 import com.george.tracker.exception.ConsumptionNotFoundException;
 import com.george.tracker.model.Consumption;
+import com.george.tracker.model.Ingredient;
 import com.george.tracker.model.Meal;
 import com.george.tracker.model.Recipe;
 import com.george.tracker.repository.ConsumptionRepository;
@@ -34,7 +35,7 @@ public class ConsumptionService {
         if (!meals.isEmpty()) {
             for (Meal m : meals) {
                 consumption.addMeal(m);
-                mealService.create(m.getName(), m.getIngredients());
+//                mealService.create(m.getName(), m.getIngredients());
             }
         }
         if (!recipes.isEmpty()) {
@@ -53,12 +54,12 @@ public class ConsumptionService {
         Consumption consumption = consumptionRepository.findByCreationDate(creationDate)
                 .orElseThrow(() -> new ConsumptionNotFoundException("Consumption with " + creationDate + "not found"));
         int totalAmountOfCalories = 0;
-        for (Recipe r : consumption.getRecipes()) {
-            totalAmountOfCalories += recipeService.getTotalNumberOfCaloriesInRecipe(r);
-        }
-        for (Meal m : consumption.getMeals()) {
-            totalAmountOfCalories += mealService.getTotalNumberOfCaloriesInMeal(m);
-        }
+//        for (Recipe r : consumption.getRecipes()) {
+//            totalAmountOfCalories += recipeService.getTotalNumberOfCaloriesInRecipe(r);
+//        }
+//        for (Meal m : consumption.getMeals()) {
+//            totalAmountOfCalories += mealService.getTotalNumberOfCaloriesInMeal(m);
+//        }
         return totalAmountOfCalories;
     }
 }

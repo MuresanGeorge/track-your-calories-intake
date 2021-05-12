@@ -5,7 +5,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.Positive;
 import javax.validation.constraints.PositiveOrZero;
 
 @Data
@@ -15,6 +14,8 @@ public class IngredientDto {
 
     @NotBlank(message = "The ingredient should have a name")
     private String name;
+
+    private String brand;
 
     @PositiveOrZero(message = "The amount of carbohydrates should be positive")
     private int carbohydrates;
@@ -28,7 +29,7 @@ public class IngredientDto {
     @PositiveOrZero(message = "The amount of fibers should be positive")
     private int fibers;
 
-    @Positive(message = "The quantity should be greater than 0")
-    private int quantity;
+//    @Positive(message = "The quantity should be greater than 0")
+//    private int quantity;
 
 }

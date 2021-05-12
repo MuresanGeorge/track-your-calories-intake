@@ -23,16 +23,16 @@ public class MealService {
         Meal meal = new Meal();
         meal.setName(mealName);
 
-        if (!ingredients.isEmpty()) {
-            for (Ingredient i : ingredients) {
-                meal.addIngredient(i);
-                ingredientService.create(i);
-            }
-        }
+//        if (!ingredients.isEmpty()) {
+//            for (Ingredient i : ingredients) {
+//                meal.addIngredient(i);
+////                ingredientService.create(i);
+//            }
+//        }
         mealRepository.save(meal);
     }
 
-    public int getTotalNumberOfCaloriesInMeal(Meal meal) {
-        return ingredientService.getTotalNumberOfCalories(meal.getIngredients());
-    }
+//    public int getTotalNumberOfCaloriesInMeal(Meal meal) {
+//        return ingredientService.getTotalNumberOfCalories(meal.getIngredients());
+//    }
 }

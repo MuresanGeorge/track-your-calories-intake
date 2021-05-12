@@ -16,6 +16,7 @@ import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Data
 @AllArgsConstructor
@@ -34,18 +35,21 @@ public class Recipe {
     @NotBlank(message = "The recipe should contains steps to follow")
     private String description;
 
-    @OneToMany(
-            mappedBy = "recipe",
-            cascade = CascadeType.ALL)
-    private List<Ingredient> ingredients = new ArrayList<>();
+//    @OneToMany(
+//            mappedBy = "recipe",
+//            cascade = CascadeType.ALL)
+//    private List<Ingredient> ingredients = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Consumption consumption;
 
     private int calories;
 
-    public void addIngredient(Ingredient ingredient) {
-        ingredients.add(ingredient);
-        ingredient.setRecipe(this);
-    }
+    @OneToMany(mappedBy = "recipe")
+    private Set<IngredientStock> ingredientStocks;
+
+//    public void addIngredient(Ingredient ingredient) {
+//        ingredients.add(ingredient);
+//        ingredient.setRecipe(this);
+//    }
 }

@@ -7,6 +7,7 @@ import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import javax.validation.Valid;
 
@@ -25,6 +27,9 @@ public class IngredientController {
     private final IngredientService ingredientService;
 
     private final ModelMapper mapper;
+
+    @Value("${api.key}")
+    private String usdaKey;
 
     public IngredientController(IngredientService ingredientService, ModelMapper modelMapper) {
         this.ingredientService = ingredientService;
@@ -61,5 +66,15 @@ public class IngredientController {
     public IngredientDto readIngredient(@PathVariable String name) {
         Ingredient ingredient = ingredientService.readIngredient(name);
         return mapper.map(ingredient, IngredientDto.class);
+    }
+
+    @GetMapping("/food/{foodName}")
+        public String getFood(@PathVariable String foodName) {
+            return WebClient.create()
+                    .get()
+                    .uri("https://api.nal.usda.gov/fdc/v1/foods/search?query=" + foodName + "&api_key=" + usdaKey)
+                    .retrieve()
+                    .bodyToMono(String.class)
+                    .block();
     }
 }
