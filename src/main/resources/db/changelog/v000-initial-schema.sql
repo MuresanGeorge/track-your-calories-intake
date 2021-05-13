@@ -1,5 +1,5 @@
 --Consumption table
-CREATE TABLE public.consumption
+create TABLE public.consumption
 (
     id BIGINT GENERATED ALWAYS AS IDENTITY,
     desired_daily_intake INTEGER NOT NULL,
@@ -9,7 +9,7 @@ CREATE TABLE public.consumption
 );
 
 --Meal table
-CREATE TABLE public.meal
+create TABLE public.meal
 (
     id BIGINT GENERATED ALWAYS AS IDENTITY,
     name VARCHAR,
@@ -20,7 +20,7 @@ CREATE TABLE public.meal
 );
 
 --Recipe table
-CREATE TABLE public.recipe
+create TABLE public.recipe
 (
     id BIGINT GENERATED ALWAYS AS IDENTITY,
     name VARCHAR NOT NULL,
@@ -33,7 +33,7 @@ CREATE TABLE public.recipe
 );
 
 --Ingredient table
-CREATE TABLE public.ingredient
+create TABLE public.ingredient
 (
     id BIGINT GENERATED ALWAYS AS IDENTITY,
     name VARCHAR NOT NULL,
@@ -43,6 +43,5 @@ CREATE TABLE public.ingredient
     fats INTEGER,
     fibers INTEGER,
 
-    CONSTRAINT ingredient_pkey PRIMARY KEY (id),
-    CONSTRAINT ingredient_name_key UNIQUE (name)
+    CONSTRAINT ingredient_pkey PRIMARY KEY (id)
 );

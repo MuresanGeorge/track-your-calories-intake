@@ -1,6 +1,7 @@
 package com.george.tracker.exception.handler;
 
 import com.george.tracker.exception.ConsumptionNotFoundException;
+import com.george.tracker.exception.IngredientDuplicateException;
 import com.george.tracker.exception.IngredientNotFoundException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -26,7 +27,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<ApiError> handleIngredientNotFound(Exception ex) {
         ApiError apiError = new ApiError();
         apiError.setError(ex.getMessage());
-        apiError.setMessage("Provide the correct name to find the ingredient");
+        apiError.setMessage("Provide the correct data to find the ingredient");
         apiError.setStatus(HttpStatus.NOT_FOUND.value());
         apiError.setTimestamp(LocalDateTime.now());
         return new ResponseEntity<>(apiError, HttpStatus.NOT_FOUND);
@@ -40,6 +41,13 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         apiError.setStatus(HttpStatus.NOT_FOUND.value());
         apiError.setTimestamp(LocalDateTime.now());
         return new ResponseEntity<>(apiError, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler({IngredientDuplicateException.class})
+    public ResponseEntity<ApiError> handleIngredientDuplicateException(Exception ex) {
+        ApiError apiError = new ApiError(HttpStatus.CONFLICT.value(), ex.getMessage(), LocalDateTime.now(),
+                "The ingredient already exists");
+        return new ResponseEntity<>(apiError, HttpStatus.CONFLICT);
     }
 
     @Override
