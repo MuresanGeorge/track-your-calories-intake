@@ -3,10 +3,11 @@ package com.george.tracker.controller;
 import com.george.tracker.model.Ingredient;
 import com.george.tracker.service.IngredientService;
 import com.george.tracker.transport.IngredientDto;
+import com.george.tracker.transport.IngredientResponse;
+import com.george.tracker.util.MapUtil;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
-import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequestMapping("/ingredients")
@@ -28,14 +30,14 @@ public class IngredientController {
 
     private final IngredientService ingredientService;
 
-    private final ModelMapper mapper;
+    private final MapUtil mapUtil;
 
     @Value("${api.key}")
     private String usdaKey;
 
-    public IngredientController(IngredientService ingredientService, ModelMapper modelMapper) {
+    public IngredientController(IngredientService ingredientService, MapUtil mapUtil) {
         this.ingredientService = ingredientService;
-        this.mapper = modelMapper;
+        this.mapUtil = mapUtil;
     }
 
 
@@ -50,14 +52,14 @@ public class IngredientController {
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
     public void createIngredient(@Valid @RequestBody IngredientDto ingredientDto) {
-        Ingredient ingredient = mapper.map(ingredientDto, Ingredient.class);
+        Ingredient ingredient = mapUtil.mapIngredientDto(ingredientDto);
         ingredientService.create(ingredient);
     }
 
 
     @ApiOperation(value = "Retrieve the ingredients according to the params ")
     @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Success", response = IngredientDto.class),
+            @ApiResponse(code = 200, message = "Success", response = IngredientResponse.class),
             @ApiResponse(code = 400, message = "Bad request"),
             @ApiResponse(code = 401, message = "Not authenticated"),
             @ApiResponse(code = 404, message = "Data not found"),
@@ -65,10 +67,11 @@ public class IngredientController {
     })
     @ResponseStatus(HttpStatus.OK)
     @GetMapping
-    public IngredientDto readIngredients(@RequestParam(required = false) String name,
-                                        @RequestParam(required = false) String brand) {
-        Ingredient ingredient = ingredientService.readIngredient(name, brand);
-        return mapper.map(ingredient, IngredientDto.class);
+    public IngredientResponse readIngredients(@RequestParam(required = false) String name,
+                                              @RequestParam(required = false) String brand) {
+        List<Ingredient> ingredients = ingredientService.readIngredients(name, brand);
+        List<IngredientDto> ingredientsDto = mapUtil.mapIngredientList(ingredients);
+        return new IngredientResponse(ingredientsDto);
     }
 
 
@@ -94,7 +97,7 @@ public class IngredientController {
     @ResponseStatus(HttpStatus.OK)
     @PutMapping("/{id}")
     public void updateIngredient(@Valid @RequestBody IngredientDto ingredientDto, @PathVariable Long id) {
-        Ingredient ingredient = mapper.map(ingredientDto, Ingredient.class);
+        Ingredient ingredient = mapUtil.mapIngredientDto(ingredientDto);
         ingredientService.updateIngredient(id, ingredient);
     }
 }

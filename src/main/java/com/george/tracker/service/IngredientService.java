@@ -7,6 +7,8 @@ import com.george.tracker.model.Macronutrient;
 import com.george.tracker.repository.IngredientRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,10 +27,18 @@ public class IngredientService {
         return ingredientRepository.save(ingredient);
     }
 
-    public Ingredient readIngredient(String name, String brand) {
-        Ingredient ingredient = new Ingredient();
-        return ingredientRepository.findByName(name)
-                .orElseThrow(() -> new IngredientNotFoundException("Ingredient with name " + name + " not found"));
+    public Ingredient readIngredient(Long ingredientId) {
+        return ingredientRepository.findById(ingredientId)
+                .orElseThrow(() -> new IngredientNotFoundException("Ingredient with id " + ingredientId + " not found"));
+    }
+
+    public List<Ingredient> readIngredients(String name, String brand) {
+        List<Ingredient> allIngredients = ingredientRepository.findAll();
+
+        allIngredients = filterByName(name, allIngredients);
+        allIngredients = filterByNameAndBrand(name, brand, allIngredients);
+
+        return allIngredients;
     }
 
     public void updateIngredient(long ingredientId, Ingredient ingredientRequest) {
@@ -68,5 +78,24 @@ public class IngredientService {
         ingredientToBeUpdated.setFibers(ingredientRequest.getFibers());
         ingredientToBeUpdated.setFats(ingredientRequest.getFats());
         ingredientToBeUpdated.setProteins(ingredientRequest.getProteins());
+    }
+
+    private List<Ingredient> filterByName(String name, List<Ingredient> ingredients) {
+        if (name == null) {
+            return ingredients;
+        }
+        return ingredientRepository.findByName(name);
+    }
+
+    private List<Ingredient> filterByNameAndBrand(String name, String brand, List<Ingredient> ingredients) {
+        if (name != null && brand != null) {
+            List<Ingredient> ingredientList = new ArrayList<>();
+            Optional<Ingredient> optionalIngredient = ingredientRepository.findByNameAndBrand(name, brand);
+            if (optionalIngredient.isPresent()) {
+                ingredientList = Collections.singletonList(optionalIngredient.get());
+            }
+            return ingredientList;
+        }
+        return ingredients;
     }
 }
