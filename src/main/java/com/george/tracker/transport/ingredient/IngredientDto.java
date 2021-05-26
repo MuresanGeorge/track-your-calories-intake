@@ -1,4 +1,4 @@
-package com.george.tracker.transport;
+package com.george.tracker.transport.ingredient;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -28,8 +28,4 @@ public class IngredientDto {
 
     @PositiveOrZero(message = "The amount of fibers should be positive")
     private int fibers;
-
-//    @Positive(message = "The quantity should be greater than 0")
-//    private int quantity;
-
 }

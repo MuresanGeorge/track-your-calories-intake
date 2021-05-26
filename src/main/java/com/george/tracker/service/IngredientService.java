@@ -18,6 +18,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -25,7 +26,6 @@ import java.util.stream.Collectors;
 public class IngredientService {
 
     private final IngredientRepository ingredientRepository;
-
 
     @Value("${usda.base.url}")
     private String usdaBaseUrl;
@@ -37,6 +37,7 @@ public class IngredientService {
     public IngredientService(IngredientRepository ingredientRepository) {
         this.ingredientRepository = ingredientRepository;
     }
+
 
     public Ingredient create(Ingredient ingredient) {
         checkIfIngredientExists(ingredient.getName(), ingredient.getBrand());
@@ -51,6 +52,11 @@ public class IngredientService {
         allIngredients = filterByNameAndBrand(name, brand, allIngredients);
 
         return allIngredients;
+    }
+
+    public Ingredient readIngredient(Long ingredientId) {
+        return ingredientRepository.findById(ingredientId)
+                .orElseThrow(() -> new IngredientNotFoundException("Ingredient with id " + ingredientId + "not found"));
     }
 
     public List<FoodUsda> readFoodFromUsda(String foodName) throws JsonProcessingException {
@@ -87,25 +93,29 @@ public class IngredientService {
     }
 
     public void updateIngredient(long ingredientId, Ingredient ingredientRequest) {
-        Ingredient ingredientToBeUpdated = ingredientRepository.findById(ingredientId)
-                .orElseThrow(() -> new IngredientNotFoundException("Ingredient with id " + ingredientId + "not found"));
-
+        Ingredient ingredientToBeUpdated = readIngredient(ingredientId);
         setNewProperties(ingredientRequest, ingredientToBeUpdated);
+
         ingredientRepository.save(ingredientToBeUpdated);
     }
 
-    public int getTotalNumberOfCalories(List<Ingredient> ingredients) {
-        int totalNumberOfCalories = 0;
+    /**
+     * This method is used to calculate the total number of calories per 100g of recipe based on all the ingredients and
+     * the calories in the ingredients
+     *
+     * @param ingredientsQuantities the map with ingredient id and ingredient quantity
+     * @return the number of calories in 100g of recipe
+     */
+    public int calculateTotalCalories(Map<Long, Long> ingredientsQuantities) {
+        int calories = 0;
+        int totalAmountOfFood = 0;
 
-        if (!ingredients.isEmpty()) {
-            for (Ingredient i : ingredients) {
-                int caloriesFromFats = (i.getFats()) * Integer.parseInt(Macronutrient.FAT.getValue());
-                int caloriesFromCarbohydrates = (i.getCarbohydrates()) * Integer.parseInt(Macronutrient.CARBOHYDRATE.getValue());
-                int caloriesFromProteins = (i.getProteins()) * Integer.parseInt(Macronutrient.PROTEIN.getValue());
-                totalNumberOfCalories += caloriesFromFats + caloriesFromCarbohydrates + caloriesFromProteins;
-            }
+        for (Map.Entry<Long, Long> pair : ingredientsQuantities.entrySet()) {
+            Ingredient ingredient = readIngredient(pair.getKey());
+            calories += (pair.getValue() * getNumberOfCaloriesInIngredient(ingredient)) / 100;
+            totalAmountOfFood += pair.getValue();
         }
-        return totalNumberOfCalories;
+        return calories * 100 / totalAmountOfFood;
     }
 
     private void checkIfIngredientExists(String name, String brand) {
@@ -151,5 +161,20 @@ public class IngredientService {
             return ingredientList;
         }
         return ingredients;
+    }
+
+    /**
+     * This method is used to calculate the total number of calories per 100g of ingredient depending on the macros
+     * (fats, proteins and carbohydrates)
+     *
+     * @param ingredient the ingredient whose calories we calculate
+     * @return the number of calories of ingredient
+     */
+    private int getNumberOfCaloriesInIngredient(Ingredient ingredient) {
+        int caloriesFromFats = (ingredient.getFats()) * Integer.parseInt(Macronutrient.FAT.getValue());
+        int caloriesFromCarbohydrates = (ingredient.getCarbohydrates()) * Integer.parseInt(Macronutrient.CARBOHYDRATE.getValue());
+        int caloriesFromProteins = (ingredient.getProteins()) * Integer.parseInt(Macronutrient.PROTEIN.getValue());
+
+        return caloriesFromFats + caloriesFromCarbohydrates + caloriesFromProteins;
     }
 }

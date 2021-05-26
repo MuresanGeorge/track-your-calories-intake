@@ -1,7 +1,11 @@
 package com.george.tracker.util;
 
 import com.george.tracker.model.Ingredient;
-import com.george.tracker.transport.IngredientDto;
+import com.george.tracker.model.IngredientStock;
+import com.george.tracker.model.Recipe;
+import com.george.tracker.transport.IngredientStockDto;
+import com.george.tracker.transport.ingredient.IngredientDto;
+import com.george.tracker.transport.recipe.RecipeDto;
 import com.george.tracker.transport.usda.FoodNutrientUsda;
 import com.george.tracker.transport.usda.FoodUsda;
 import com.george.tracker.transport.usda.MacronutrientUsda;
@@ -37,6 +41,13 @@ public class MapUtil {
         return ingredients;
     }
 
+    public List<IngredientStock> mapToIngredientStockList(List<IngredientStockDto> ingredientsStockDto) {
+        return ingredientsStockDto
+                .stream()
+                .map(ingredientStockDto -> modelMapper.map(ingredientStockDto, IngredientStock.class))
+                .collect(Collectors.toList());
+    }
+
     public IngredientDto mapToIngredientDto(Ingredient ingredient) {
         return modelMapper.map(ingredient, IngredientDto.class);
     }
@@ -65,5 +76,16 @@ public class MapUtil {
         newIngredient.setFats(fats.getValue());
 
         return newIngredient;
+    }
+
+    public IngredientStock mapToIngredientStock(IngredientStockDto ingredientStockDto) {
+        return modelMapper.map(ingredientStockDto, IngredientStock.class);
+    }
+
+    public List<RecipeDto> mapToRecipesDto(List<Recipe> recipes) {
+        return recipes
+                .stream()
+                .map(recipe -> modelMapper.map(recipe, RecipeDto.class))
+                .collect(Collectors.toList());
     }
 }
