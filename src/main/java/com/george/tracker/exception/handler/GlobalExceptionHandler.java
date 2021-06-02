@@ -4,6 +4,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.george.tracker.exception.ConsumptionNotFoundException;
 import com.george.tracker.exception.IngredientDuplicateException;
 import com.george.tracker.exception.IngredientNotFoundException;
+import com.george.tracker.exception.IngredientStockNotFoundException;
+import com.george.tracker.exception.RecipeNotFoundException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -39,6 +41,26 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         ApiError apiError = new ApiError();
         apiError.setError(ex.getMessage());
         apiError.setMessage("Provide the correct data to find the consumption");
+        apiError.setStatus(HttpStatus.NOT_FOUND.value());
+        apiError.setTimestamp(LocalDateTime.now());
+        return new ResponseEntity<>(apiError, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler({RecipeNotFoundException.class})
+    public ResponseEntity<ApiError> handleRecipeNotFound(Exception ex) {
+        ApiError apiError = new ApiError();
+        apiError.setError(ex.getMessage());
+        apiError.setMessage("Provide the correct data to find the recipe");
+        apiError.setStatus(HttpStatus.NOT_FOUND.value());
+        apiError.setTimestamp(LocalDateTime.now());
+        return new ResponseEntity<>(apiError, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler({IngredientStockNotFoundException.class})
+    public ResponseEntity<ApiError> handleIngredientStockNotFound(Exception ex) {
+        ApiError apiError = new ApiError();
+        apiError.setError(ex.getMessage());
+        apiError.setMessage("Provide the correct data to find the ingredient stock");
         apiError.setStatus(HttpStatus.NOT_FOUND.value());
         apiError.setTimestamp(LocalDateTime.now());
         return new ResponseEntity<>(apiError, HttpStatus.NOT_FOUND);

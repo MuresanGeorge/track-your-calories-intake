@@ -3,8 +3,8 @@ package com.george.tracker.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.george.tracker.model.Ingredient;
 import com.george.tracker.service.IngredientService;
-import com.george.tracker.transport.IngredientDto;
-import com.george.tracker.transport.IngredientResponse;
+import com.george.tracker.transport.ingredient.IngredientDto;
+import com.george.tracker.transport.ingredient.IngredientResponse;
 import com.george.tracker.transport.usda.FoodUsda;
 import com.george.tracker.util.MapUtil;
 import io.swagger.annotations.ApiOperation;
@@ -101,7 +101,7 @@ public class IngredientController {
     }
 
 
-    @ApiOperation(value = "Update a ingredient", notes = "Returns 200 OK if the ingredient is successfully updated")
+    @ApiOperation(value = "Update an ingredient", notes = "Returns 200 OK if the ingredient is successfully updated")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Success"),
             @ApiResponse(code = 400, message = "Bad request"),

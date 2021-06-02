@@ -1,11 +1,11 @@
-package com.george.tracker.transport;
+package com.george.tracker.transport.recipe;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.validation.constraints.NotBlank;
-import java.util.List;
+import java.util.Map;
 
 @Data
 @NoArgsConstructor
@@ -18,6 +18,7 @@ public class RecipeDto {
     @NotBlank(message = "The recipe should contains steps to follow")
     private String description;
 
-    private List<IngredientDto> ingredients;
+    private Map<Long, Long> ingredientQuantity;
 
+    private int calories;
 }

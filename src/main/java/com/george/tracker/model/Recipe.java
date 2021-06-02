@@ -1,6 +1,7 @@
 package com.george.tracker.model;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -14,13 +15,13 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Set;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 @Entity
 @Table(name = "recipe")
 public class Recipe {
@@ -35,21 +36,11 @@ public class Recipe {
     @NotBlank(message = "The recipe should contains steps to follow")
     private String description;
 
-//    @OneToMany(
-//            mappedBy = "recipe",
-//            cascade = CascadeType.ALL)
-//    private List<Ingredient> ingredients = new ArrayList<>();
-
     @ManyToOne(fetch = FetchType.LAZY)
     private Consumption consumption;
 
     private int calories;
 
-    @OneToMany(mappedBy = "recipe")
-    private Set<IngredientStock> ingredientStocks;
-
-//    public void addIngredient(Ingredient ingredient) {
-//        ingredients.add(ingredient);
-//        ingredient.setRecipe(this);
-//    }
+    @OneToMany(mappedBy = "recipe", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
+    private Set<IngredientStock> ingredientStocks = new HashSet<>();
 }
