@@ -43,13 +43,6 @@ public class Ingredient {
 //    @Positive(message = "The quantity should be greater than 0")
 //    private int quantity;
 
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    private Recipe recipe;
-
-//    @ToString.Exclude
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    private Meal meal;
-
     @PositiveOrZero(message = "The amount of carbohydrates should be positive")
     private int carbohydrates;
 

@@ -19,6 +19,7 @@ import java.util.stream.Collectors;
 @Component
 public class MapUtil {
 
+    //TODO : in the future replace modelMapper with another more efficient framework for mapping like JMapper or MapStruct
     private final ModelMapper modelMapper;
 
     public MapUtil(ModelMapper modelMapper) {

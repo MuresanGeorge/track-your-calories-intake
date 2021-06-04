@@ -1,6 +1,5 @@
 package com.george.tracker.controller;
 
-import com.george.tracker.model.Consumption;
 import com.george.tracker.service.ConsumptionService;
 import com.george.tracker.transport.ConsumptionDto;
 import io.swagger.annotations.ApiOperation;
@@ -41,7 +40,6 @@ public class ConsumptionController {
     })
     @ResponseStatus(HttpStatus.CREATED)
     public void createConsumption(@Valid @RequestBody ConsumptionDto consumptionDto) {
-        Consumption consumption = mapper.map(consumptionDto, Consumption.class);
-        consumptionService.create(consumption.getDesiredDailyIntake(), consumption.getMeals(), consumption.getRecipes());
+
     }
 }
