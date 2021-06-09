@@ -1,6 +1,5 @@
 package com.george.tracker.exception.handler;
 
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

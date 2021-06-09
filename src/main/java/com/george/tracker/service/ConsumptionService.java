@@ -2,12 +2,10 @@ package com.george.tracker.service;
 
 import com.george.tracker.exception.ConsumptionNotFoundException;
 import com.george.tracker.model.Consumption;
-import com.george.tracker.model.Ingredient;
 import com.george.tracker.model.Meal;
 import com.george.tracker.model.Recipe;
 import com.george.tracker.repository.ConsumptionRepository;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -28,8 +26,9 @@ public class ConsumptionService {
         this.recipeService = recipeService;
     }
 
-//    @Transactional
-    public void create(int dailyIntake, List<Meal> meals, List<Recipe> recipes) {
+    //    @Transactional
+    public void create(int dailyIntake, int proteinsPercentage, int fatsPercentage, int carbohydratesPercentage,
+                       List<Meal> meals, List<Recipe> recipes) {
         Consumption consumption = new Consumption();
 
         if (!meals.isEmpty()) {

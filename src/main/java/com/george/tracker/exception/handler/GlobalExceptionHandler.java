@@ -5,6 +5,8 @@ import com.george.tracker.exception.ConsumptionNotFoundException;
 import com.george.tracker.exception.IngredientDuplicateException;
 import com.george.tracker.exception.IngredientNotFoundException;
 import com.george.tracker.exception.IngredientStockNotFoundException;
+import com.george.tracker.exception.IngredientStoreNotFoundException;
+import com.george.tracker.exception.MealNotFoundException;
 import com.george.tracker.exception.RecipeNotFoundException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -61,6 +63,26 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         ApiError apiError = new ApiError();
         apiError.setError(ex.getMessage());
         apiError.setMessage("Provide the correct data to find the ingredient stock");
+        apiError.setStatus(HttpStatus.NOT_FOUND.value());
+        apiError.setTimestamp(LocalDateTime.now());
+        return new ResponseEntity<>(apiError, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler({MealNotFoundException.class})
+    public ResponseEntity<ApiError> handleMealNotFound(Exception ex) {
+        ApiError apiError = new ApiError();
+        apiError.setError(ex.getMessage());
+        apiError.setMessage("Provide the correct data to find the meal");
+        apiError.setStatus(HttpStatus.NOT_FOUND.value());
+        apiError.setTimestamp(LocalDateTime.now());
+        return new ResponseEntity<>(apiError, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler({IngredientStoreNotFoundException.class})
+    public ResponseEntity<ApiError> handleIngredientStoreNotFound(Exception ex) {
+        ApiError apiError = new ApiError();
+        apiError.setError(ex.getMessage());
+        apiError.setMessage("Provide the correct data to find the ingredient store");
         apiError.setStatus(HttpStatus.NOT_FOUND.value());
         apiError.setTimestamp(LocalDateTime.now());
         return new ResponseEntity<>(apiError, HttpStatus.NOT_FOUND);

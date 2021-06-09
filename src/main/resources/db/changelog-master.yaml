@@ -5,3 +5,5 @@ databaseChangeLog:
       file: classpath:db/changelog/v000-alter-consumption.sql
   - include:
       file: classpath:db/changelog/v000-create-ingredient-stock.sql
+  - include:
+      file: classpath:db/changelog/v000-create-ingredient-store.sql

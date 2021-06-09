@@ -14,8 +14,9 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import java.util.ArrayList;
-import java.util.List;
+import javax.validation.constraints.NotBlank;
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
 @AllArgsConstructor
@@ -28,21 +29,29 @@ public class Meal {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
+    @NotBlank(message = "The meal should have a name")
     private String name;
 
-//    @OneToMany(
-//            mappedBy = "meal",
-//            cascade = CascadeType.ALL
-//    )
-//    private List<Ingredient> ingredients = new ArrayList<>();
+    @OneToMany(
+            mappedBy = "meal",
+            cascade = {CascadeType.PERSIST, CascadeType.MERGE},
+            orphanRemoval = true
+    )
+    private Set<IngredientStore> ingredientsStore = new HashSet<>();
 
     @ToString.Exclude
     @ManyToOne(fetch = FetchType.LAZY)
     private Consumption consumption;
 
-//    public void addIngredient(Ingredient ingredient) {
-//        ingredients.add(ingredient);
-//        ingredient.setMeal(this);
-//    }
+    public void addIngredientStore(IngredientStore ingredientStore) {
+        ingredientsStore.add(ingredientStore);
+        ingredientStore.setMeal(this);
+    }
+
+    public void removeIngredientStore(IngredientStore ingredientStore) {
+        ingredientsStore.remove(ingredientStore);
+        ingredientStore.setMeal(null);
+    }
+
 }
 

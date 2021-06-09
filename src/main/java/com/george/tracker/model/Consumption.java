@@ -34,15 +34,23 @@ public class Consumption {
     @FutureOrPresent(message = "The consumption date should be today or in the future")
     private LocalDate creationDate;
 
+    /**
+     * HIT the MACROS IDEA
+     */
+    private int carbohydrates;
+
+    private int proteins;
+
+    private int fats;
+
     @OneToMany(
             mappedBy = "consumption",
-            cascade = CascadeType.ALL,
-            orphanRemoval = true)
+            cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private List<Meal> meals = new ArrayList<>();
 
     @OneToMany(
             mappedBy = "consumption",
-            cascade = CascadeType.ALL)
+            cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private List<Recipe> recipes = new ArrayList<>();
 
     public void addMeal(Meal meal) {
@@ -58,5 +66,10 @@ public class Consumption {
     public void removeMeal(Meal meal) {
         meals.remove(meal);
         meal.setConsumption(null);
+    }
+
+    public void removeRecipe(Recipe recipe) {
+        recipes.remove(recipe);
+        recipe.setConsumption(null);
     }
 }

@@ -1,22 +1,19 @@
 package com.george.tracker.transport;
 
-import com.george.tracker.transport.ingredient.IngredientDto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
-import java.util.List;
+import javax.validation.constraints.NotBlank;
+import java.util.Map;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class MealDto {
 
+    @NotBlank(message = "The meal should have a name")
     private String name;
 
-    @NotNull
-    @Valid
-    private List<IngredientDto> ingredients;
+    private Map<Long, Long> ingredientsQuantities;
 }
