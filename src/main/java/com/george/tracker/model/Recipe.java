@@ -3,15 +3,16 @@ package com.george.tracker.model;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToOne;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
@@ -36,11 +37,17 @@ public class Recipe {
     @NotBlank(message = "The recipe should contains steps to follow")
     private String description;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Consumption consumption;
-
     private int calories;
 
     @OneToMany(mappedBy = "recipe", cascade = {CascadeType.PERSIST, CascadeType.MERGE})
     private Set<IngredientStock> ingredientStocks = new HashSet<>();
+
+    @ToString.Exclude
+    @EqualsAndHashCode.Exclude
+    @ManyToMany(mappedBy = "recipes")
+    private Set<Consumption> consumptions = new HashSet<>();
+
+    private boolean isUpdated;
+
+    private int weight;
 }

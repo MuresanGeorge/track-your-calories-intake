@@ -4,18 +4,19 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.FutureOrPresent;
 import javax.validation.constraints.Positive;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Data
 @AllArgsConstructor
@@ -43,33 +44,37 @@ public class Consumption {
 
     private int fats;
 
-    @OneToMany(
-            mappedBy = "consumption",
-            cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    private List<Meal> meals = new ArrayList<>();
+    @ManyToMany
+    @JoinTable(name = "consumption_meal",
+            joinColumns = @JoinColumn(name = "consumption_id"),
+            inverseJoinColumns = @JoinColumn(name = "meal_id")
+    )
+    private Set<Meal> meals = new HashSet<>();
 
-    @OneToMany(
-            mappedBy = "consumption",
-            cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    private List<Recipe> recipes = new ArrayList<>();
+    @ManyToMany
+    @JoinTable(name = "consumption_recipe",
+            joinColumns = @JoinColumn(name = "consumption_id"),
+            inverseJoinColumns = @JoinColumn(name = "recipe_id")
+    )
+    private Set<Recipe> recipes = new HashSet<>();
 
     public void addMeal(Meal meal) {
         meals.add(meal);
-        meal.setConsumption(this);
+        meal.getConsumptions().add(this);
     }
 
     public void addRecipe(Recipe recipe) {
         recipes.add(recipe);
-        recipe.setConsumption(this);
-    }
-
-    public void removeMeal(Meal meal) {
-        meals.remove(meal);
-        meal.setConsumption(null);
+        recipe.getConsumptions().add(this);
     }
 
     public void removeRecipe(Recipe recipe) {
         recipes.remove(recipe);
-        recipe.setConsumption(null);
+        recipe.getConsumptions().remove(this);
+    }
+
+    public void removeMeal(Meal meal) {
+        meals.remove(meal);
+        meal.getConsumptions().remove(this);
     }
 }

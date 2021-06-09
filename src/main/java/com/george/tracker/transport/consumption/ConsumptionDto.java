@@ -1,6 +1,6 @@
-package com.george.tracker.transport;
+package com.george.tracker.transport.consumption;
 
-import com.george.tracker.transport.recipe.RecipeDto;
+import com.george.tracker.transport.meal.MealDto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -8,20 +8,17 @@ import lombok.NoArgsConstructor;
 import javax.validation.Valid;
 import javax.validation.constraints.PositiveOrZero;
 import java.util.List;
+import java.util.Map;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class ConsumptionDto {
 
+    private long id;
+
     @PositiveOrZero(message = "Daily intake should be 0 on fasting days and greater than 0 on the other days")
     private int desiredDailyIntake;
-
-    private int carbohydratesPercentage;
-
-    private int proteinsPercentage;
-
-    private int fatsPercentage;
 
     /**
      * add your first meal of the day or add later in UI
@@ -30,8 +27,7 @@ public class ConsumptionDto {
     private List<MealDto> meals;
 
     /**
-     * add a recipe from existing ones or add a new recipe to your kitchen in UI
+     * add a recipe from existing ones in UI
      */
-    @Valid
-    private List<RecipeDto> recipes;
+    private Map<Long, Long> recipesWithQuantities;
 }

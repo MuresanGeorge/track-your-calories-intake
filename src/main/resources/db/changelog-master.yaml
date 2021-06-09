@@ -7,3 +7,9 @@ databaseChangeLog:
       file: classpath:db/changelog/v000-create-ingredient-stock.sql
   - include:
       file: classpath:db/changelog/v000-create-ingredient-store.sql
+  - include:
+      file: classpath:db/changelog/v000-create-consumption-meal.sql
+  - include:
+      file: classpath:db/changelog/v000-create-consumption-recipe.sql
+  - include:
+      file: classpath:db/changelog/v000-alter-recipe.sql

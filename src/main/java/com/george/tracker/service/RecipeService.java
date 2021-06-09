@@ -5,12 +5,14 @@ import com.george.tracker.exception.RecipeNotFoundException;
 import com.george.tracker.model.Ingredient;
 import com.george.tracker.model.IngredientAmountKey;
 import com.george.tracker.model.IngredientStock;
+import com.george.tracker.model.Macronutrient;
 import com.george.tracker.model.Recipe;
 import com.george.tracker.repository.RecipeRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -32,13 +34,14 @@ public class RecipeService {
         this.ingredientStockService = ingredientStockService;
     }
 
-
     public void create(String name, String description, Map<Long, Long> ingredientsQuantities) {
         Recipe newRecipe = Recipe.builder()
                 .calories(0)
                 .description(description)
                 .name(name)
                 .ingredientStocks(new HashSet<>())
+                .isUpdated(false)
+                .weight(0)
                 .build();
 
         if (ingredientsQuantities != null) {
@@ -48,6 +51,8 @@ public class RecipeService {
         }
         recipeRepository.save(newRecipe);
     }
+
+    //TODO:think about it
 
     public List<Recipe> readRecipes(Long id, String name, String ingredientName, List<Long> ingredients) {
         List<Recipe> allRecipes = recipeRepository.findAll();
@@ -60,6 +65,10 @@ public class RecipeService {
         return allRecipes;
     }
 
+    /**
+     * think about what's happening if you remove an ingredient stock from the list of ingredients stocks while updating
+     * an existing recipe
+     */
     public Recipe updateRecipe(long recipeId, String name, String description, Map<Long, Long> ingredientsQuantities) {
         Recipe recipeToBeUpdated = recipeRepository.findById(recipeId)
                 .orElseThrow(() -> new RecipeNotFoundException("Recipe with id " + recipeId + "not found"));
@@ -69,6 +78,46 @@ public class RecipeService {
         updateIngredientStocks(ingredientsQuantities, recipeToBeUpdated);
         recipeToBeUpdated.setCalories(ingredientService.calculateTotalCalories(ingredientsQuantities));
         return recipeRepository.save(recipeToBeUpdated);
+    }
+
+    public Integer updateCalories(Integer weight, Long id) {
+        Recipe recipeToBeUpdated = readById(id);
+        recipeToBeUpdated.setCalories(calculateCaloriesPer100G(recipeToBeUpdated, weight));
+        recipeToBeUpdated.setUpdated(true);
+        recipeToBeUpdated.setWeight(weight);
+        Recipe recipeAfterUpdate = recipeRepository.save(recipeToBeUpdated);
+        return recipeAfterUpdate.getCalories();
+    }
+
+    public Recipe readById(Long id) {
+        return recipeRepository.findById(id)
+                .orElseThrow(() -> new RecipeNotFoundException("Recipe with id " + id + "not found"));
+    }
+
+    public int getMacrosOfARecipe(Recipe recipe, Macronutrient macronutrient) {
+        int macro;
+        switch (macronutrient) {
+            case CARBOHYDRATE:
+                macro = ingredientStockService.getTotalCarbohydrates(recipe.getIngredientStocks());
+                break;
+            case PROTEIN:
+                macro = ingredientStockService.getTotalProteins(recipe.getIngredientStocks());
+                break;
+            case FAT:
+                macro = ingredientStockService.getTotalFats(recipe.getIngredientStocks());
+                break;
+            default:
+                macro = 0;
+                break;
+        }
+        return macro;
+    }
+
+    private int getTotalCaloriesInARecipe(Set<IngredientStock> ingredientStocks) {
+        Map<Long, Long> ingredientsQuantities = new HashMap<>();
+        ingredientStocks.forEach(ingredientStock -> ingredientsQuantities.put(ingredientStock.getIngredient().getId(),
+                Long.valueOf(ingredientStock.getQuantity())));
+        return ingredientService.calculateTotalCalories(ingredientsQuantities);
     }
 
     private List<Recipe> filterByName(String name, List<Recipe> recipes) {
@@ -107,11 +156,6 @@ public class RecipeService {
         return Collections.singletonList(readById(id));
     }
 
-    private Recipe readById(Long id) {
-        return recipeRepository.findById(id)
-                .orElseThrow(() -> new RecipeNotFoundException("Recipe with id " + id + "not found"));
-    }
-
     private Set<IngredientStock> createIngredientStocksOfRecipe(Map<Long, Long> ingredientsQuantities, Recipe recipe) {
         Set<IngredientStock> ingredientStocks = new HashSet<>();
         for (Map.Entry<Long, Long> pair : ingredientsQuantities.entrySet()) {
@@ -144,4 +188,10 @@ public class RecipeService {
         Ingredient ingredientToBeStocked = ingredientService.readIngredient(ingredientId);
         ingredientStockService.create(ingredientToBeStocked, recipe, quantity);
     }
+
+    private int calculateCaloriesPer100G(Recipe recipe, Integer weight) {
+        int totalCaloriesInAllIngredients = recipe.getCalories();
+        return ((100 * totalCaloriesInAllIngredients) / weight.intValue());
+    }
+
 }

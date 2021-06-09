@@ -4,12 +4,13 @@ import com.george.tracker.exception.IngredientStoreNotFoundException;
 import com.george.tracker.exception.MealNotFoundException;
 import com.george.tracker.model.Ingredient;
 import com.george.tracker.model.IngredientStore;
+import com.george.tracker.model.Macronutrient;
 import com.george.tracker.model.Meal;
 import com.george.tracker.repository.MealRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
-import java.util.Map;
+import java.util.List;
 import java.util.Set;
 
 @Service
@@ -29,34 +30,63 @@ public class MealService {
     }
 
 
-    public void create(String mealName, Map<Long, Long> ingredientsQuantities) {
+    public Meal create(String mealName, List<IngredientStore> ingredientsQuantities) {
         Meal newMeal = new Meal();
         newMeal.setName(mealName);
-        Set<IngredientStore> ingredientsInMeal;
-        if (ingredientsQuantities != null) {
-            ingredientsInMeal = createIngredientsStoreInMeal(ingredientsQuantities, newMeal);
-            newMeal.setIngredientsStore(ingredientsInMeal);
-        }
-        mealRepository.save(newMeal);
+        Set<IngredientStore> ingredientsInMeal = createIngredientsStoreInMeal(ingredientsQuantities, newMeal);
+        newMeal.setIngredientsStore(ingredientsInMeal);
+
+        return mealRepository.save(newMeal);
     }
 
-    public Meal updateMeal(long mealId, String mealName, Map<Long, Long> ingredientsQuantities) {
-        Meal mealToBeUpdated = readById(mealId);
+    //TODO:think about it
 
+    /**
+     * think about what's happening if you remove an ingredient store from the list of ingredients store while updating
+     * an existing meal
+     */
+    public Meal updateMeal(long mealId, String mealName, List<IngredientStore> ingredientsQuantities) {
+        Meal mealToBeUpdated = readById(mealId);
         mealToBeUpdated.setName(mealName);
         updateIngredientsStore(mealToBeUpdated, ingredientsQuantities);
 
         return mealRepository.save(mealToBeUpdated);
     }
 
-    private void updateIngredientsStore(Meal meal, Map<Long, Long> ingredientsQuantities) {
-        ingredientsQuantities.forEach((ingredientId, ingredientAmount) -> {
+    public Meal readByName(String mealName) {
+        return mealRepository.findByName(mealName)
+                .orElseThrow(() -> new MealNotFoundException("Meal with name " + mealName + " not found"));
+    }
+
+    public Meal readById(long mealId) {
+        return mealRepository.findById(mealId)
+                .orElseThrow(() -> new MealNotFoundException("Meal with id " + mealId + " not found"));
+    }
+
+    public int calculateMacrosFromIngredientStore(Macronutrient macronutrient, IngredientStore ingredientStore) {
+        int macroValue;
+        switch (macronutrient) {
+            case FAT:
+                macroValue = ingredientStoreService.calculateTotalFats(ingredientStore);
+                break;
+            case PROTEIN:
+                macroValue = ingredientStoreService.calculateTotalProteins(ingredientStore);
+                break;
+            case CARBOHYDRATE:
+                macroValue = ingredientStoreService.calculateTotalCarbohydrates(ingredientStore);
+                break;
+            default:
+                macroValue = 0;
+        }
+        return macroValue;
+    }
+
+    private void updateIngredientsStore(Meal meal, List<IngredientStore> ingredientsQuantities) {
+        ingredientsQuantities.forEach(is -> {
             try {
-                IngredientStore ingredientStoreToBeUpdated = ingredientStoreService
-                        .readByIngredientAndMeal(ingredientId, meal.getId());
-                ingredientStoreToBeUpdated.setAmount(ingredientAmount.intValue());
+                ingredientStoreService.updateIngredientStore(is.getIngredient().getId(), meal.getId(), is.getAmount());
             } catch (IngredientStoreNotFoundException ex) {
-                createIngredientStoreIfNotExist(ingredientId, meal, ingredientAmount.intValue());
+                createIngredientStoreIfNotExist(is.getIngredient().getId(), meal, is.getAmount());
             }
         });
     }
@@ -66,22 +96,18 @@ public class MealService {
         ingredientStoreService.create(ingredientToBeStored, meal, amount);
     }
 
-    private Set<IngredientStore> createIngredientsStoreInMeal(Map<Long, Long> ingredientsQuantities, Meal meal) {
-        Set<IngredientStore> ingredientsStore = new HashSet<>();
-
-        for (Map.Entry<Long, Long> pair : ingredientsQuantities.entrySet()) {
-            Ingredient ingredient = ingredientService.readIngredient(pair.getKey());
-            IngredientStore ingredientStore = new IngredientStore();
-            ingredientStore.setIngredient(ingredient);
-            ingredientStore.setAmount(pair.getValue().intValue());
-            ingredientStore.setMeal(meal);
-            ingredientsStore.add(ingredientStore);
+    private Set<IngredientStore> createIngredientsStoreInMeal(List<IngredientStore> ingredientsQuantities, Meal newMeal) {
+        Set<IngredientStore> ingredientsInMeal = new HashSet<>();
+        if (!ingredientsQuantities.isEmpty()) {
+            for (IngredientStore is : ingredientsQuantities) {
+                Ingredient ingredient = ingredientService.readIngredient(is.getIngredient().getId());
+                IngredientStore ingredientStore = new IngredientStore();
+                ingredientStore.setIngredient(ingredient);
+                ingredientStore.setAmount(is.getAmount());
+                ingredientStore.setMeal(newMeal);
+                ingredientsInMeal.add(ingredientStore);
+            }
         }
-        return ingredientsStore;
-    }
-
-    private Meal readById(long mealId) {
-        return mealRepository.findById(mealId)
-                .orElseThrow(() -> new MealNotFoundException("Meal with id " + mealId + " not found"));
+        return ingredientsInMeal;
     }
 }
