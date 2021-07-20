@@ -2,10 +2,15 @@ package com.george.tracker.util;
 
 import com.george.tracker.model.Ingredient;
 import com.george.tracker.model.IngredientStock;
+import com.george.tracker.model.IngredientStore;
+import com.george.tracker.model.Meal;
 import com.george.tracker.model.Recipe;
-import com.george.tracker.transport.IngredientStockDto;
 import com.george.tracker.transport.ingredient.IngredientDto;
+import com.george.tracker.transport.ingredient.IngredientStockDto;
+import com.george.tracker.transport.ingredient.IngredientStoreDto;
+import com.george.tracker.transport.meal.MealDto;
 import com.george.tracker.transport.recipe.RecipeDto;
+import com.george.tracker.transport.recipe.RecipeQuantityDto;
 import com.george.tracker.transport.usda.FoodNutrientUsda;
 import com.george.tracker.transport.usda.FoodUsda;
 import com.george.tracker.transport.usda.MacronutrientUsda;
@@ -42,6 +47,17 @@ public class MapUtil {
         return ingredients;
     }
 
+    public List<IngredientStore> mapToIngredientStoreList(List<IngredientStoreDto> ingredientStoreDtos) {
+        if (ingredientStoreDtos != null) {
+            return ingredientStoreDtos
+                    .stream()
+                    .map(ingredientStoreDto -> modelMapper.map(ingredientStoreDto, IngredientStore.class))
+                    .collect(Collectors.toList());
+        } else {
+            return new ArrayList<>();
+        }
+    }
+
     public List<IngredientStock> mapToIngredientStockList(List<IngredientStockDto> ingredientsStockDto) {
         return ingredientsStockDto
                 .stream()
@@ -49,22 +65,38 @@ public class MapUtil {
                 .collect(Collectors.toList());
     }
 
-    public IngredientDto mapToIngredientDto(Ingredient ingredient) {
-        return modelMapper.map(ingredient, IngredientDto.class);
-    }
-
     public Ingredient mapToIngredient(IngredientDto ingredientDto) {
         return modelMapper.map(ingredientDto, Ingredient.class);
     }
 
-    public Ingredient mapToIngredient(FoodUsda foodUsda) {
+    public List<Meal> mapToMeals(List<MealDto> mealDtos) {
+        List<Meal> meals = new ArrayList<>();
+        mealDtos.forEach(mealDto -> meals.add(mapToMeal(mealDto)));
+        return meals;
+    }
+
+    public List<Recipe> mapToRecipes(List<RecipeQuantityDto> recipes) {
+        return recipes
+                .stream()
+                .map(recipeQuantityDto -> modelMapper.map(recipeQuantityDto, Recipe.class))
+                .collect(Collectors.toList());
+    }
+
+    public List<RecipeDto> mapToRecipesDto(List<Recipe> recipes) {
+        return recipes
+                .stream()
+                .map(recipe -> modelMapper.map(recipe, RecipeDto.class))
+                .collect(Collectors.toList());
+    }
+
+    private Ingredient mapToIngredient(FoodUsda foodUsda) {
         modelMapper.typeMap(FoodUsda.class, Ingredient.class)
                 .addMapping(FoodUsda::getLowercaseDescription, Ingredient::setName);
         return modelMapper.map(foodUsda, Ingredient.class);
 
     }
 
-    public Ingredient mapFoodUsdaToIngredient(FoodUsda foodUsda) {
+    private Ingredient mapFoodUsdaToIngredient(FoodUsda foodUsda) {
         Ingredient newIngredient = mapToIngredient(foodUsda);
 
         FoodNutrientUsda carbohydrates = foodUsda.getSpecificNutrient(MacronutrientUsda.CARBOHYDRATEUSDA.getValue());
@@ -79,14 +111,10 @@ public class MapUtil {
         return newIngredient;
     }
 
-    public IngredientStock mapToIngredientStock(IngredientStockDto ingredientStockDto) {
-        return modelMapper.map(ingredientStockDto, IngredientStock.class);
-    }
-
-    public List<RecipeDto> mapToRecipesDto(List<Recipe> recipes) {
-        return recipes
-                .stream()
-                .map(recipe -> modelMapper.map(recipe, RecipeDto.class))
-                .collect(Collectors.toList());
+    private Meal mapToMeal(MealDto mealDto) {
+        modelMapper.typeMap(MealDto.class, Meal.class)
+                .addMapping(MealDto::getName, Meal::setName)
+                .addMapping(MealDto::getIngredientsStore, Meal::setIngredientsStore);
+        return modelMapper.map(mealDto, Meal.class);
     }
 }

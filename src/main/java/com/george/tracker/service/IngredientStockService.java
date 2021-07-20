@@ -9,6 +9,7 @@ import com.george.tracker.repository.IngredientStockRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Set;
 
 @Service
 public class IngredientStockService {
@@ -32,6 +33,11 @@ public class IngredientStockService {
         return ingredientStockRepository.save(newIngredientStock);
     }
 
+    public void deleteIngredientStock(Long ingredientId, Long recipeId) {
+        IngredientStock ingredientStockToBeDeleted = readIngredientStock(ingredientId, recipeId);
+        ingredientStockRepository.delete(ingredientStockToBeDeleted);
+    }
+
     public IngredientStock readIngredientStock(Long ingredientId, Long recipeId) {
         return ingredientStockRepository.findById(new IngredientAmountKey(ingredientId, recipeId))
                 .orElseThrow(() -> new IngredientStockNotFoundException("Ingredient stock not found"));
@@ -39,5 +45,35 @@ public class IngredientStockService {
 
     public List<IngredientStock> readIngredientStocksOfRecipe(Long recipeId) {
         return ingredientStockRepository.findByRecipeId(recipeId);
+    }
+
+    public int getTotalCarbohydrates(Set<IngredientStock> ingredientStocks) {
+        int carbohydrates = 0;
+        for (IngredientStock is : ingredientStocks) {
+            Ingredient ingredient = is.getIngredient();
+            int quantity = is.getQuantity();
+            carbohydrates += ((quantity * ingredient.getCarbohydrates()) / 100);
+        }
+        return carbohydrates;
+    }
+
+    public int getTotalProteins(Set<IngredientStock> ingredientStocks) {
+        int proteins = 0;
+        for (IngredientStock is : ingredientStocks) {
+            Ingredient ingredient = is.getIngredient();
+            int quantity = is.getQuantity();
+            proteins += ((quantity * ingredient.getProteins()) / 100);
+        }
+        return proteins;
+    }
+
+    public int getTotalFats(Set<IngredientStock> ingredientStocks) {
+        int fats = 0;
+        for (IngredientStock is : ingredientStocks) {
+            Ingredient ingredient = is.getIngredient();
+            int quantity = is.getQuantity();
+            fats += ((quantity * ingredient.getFats()) / 100);
+        }
+        return fats;
     }
 }

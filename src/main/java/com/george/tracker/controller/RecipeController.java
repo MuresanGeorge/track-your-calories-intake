@@ -75,6 +75,21 @@ public class RecipeController {
     }
 
 
+    @ApiOperation(value = "Update the calories in a recipe", notes = "Returns 200 Success if the recipe is successfully updated")
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Success", response = Integer.class),
+            @ApiResponse(code = 400, message = "Bad request"),
+            @ApiResponse(code = 401, message = "Not authenticated"),
+            @ApiResponse(code = 404, message = "Data not found"),
+            @ApiResponse(code = 500, message = "Internal server error")
+    })
+    @ResponseStatus(HttpStatus.OK)
+    @PutMapping("/calories/{id}")
+    public Integer updateCaloriesInARecipe(@RequestParam Integer weight, @PathVariable Long id) {
+        return recipeService.updateCalories(weight, id);
+    }
+
+
     @ApiOperation(value = "Retrieve the recipes/recipe according to the params ")
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Success", response = RecipeResponse.class),

@@ -1,0 +1,3 @@
+ALTER TABLE public.recipe
+ADD COLUMN is_updated BOOLEAN,
+ADD COLUMN weight INTEGER;

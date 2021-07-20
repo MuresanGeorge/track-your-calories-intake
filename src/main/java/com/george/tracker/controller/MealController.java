@@ -1,7 +1,8 @@
 package com.george.tracker.controller;
 
+import com.george.tracker.model.IngredientStore;
 import com.george.tracker.service.MealService;
-import com.george.tracker.transport.MealDto;
+import com.george.tracker.transport.meal.MealDto;
 import com.george.tracker.util.MapUtil;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiResponse;
@@ -16,7 +17,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
-import java.util.Map;
+import java.util.List;
 
 @RestController
 @RequestMapping("/meals")
@@ -44,9 +45,9 @@ public class MealController {
     @PostMapping
     public void createMeal(@Valid @RequestBody MealDto mealDto) {
         String mealName = mealDto.getName();
-        Map<Long, Long> ingredientsAmount = mealDto.getIngredientsQuantities();
+        List<IngredientStore> ingredientStores = mapUtil.mapToIngredientStoreList(mealDto.getIngredientsStore());
 
-        mealService.create(mealName, ingredientsAmount);
+        mealService.create(mealName, ingredientStores);
     }
 
 
@@ -62,7 +63,7 @@ public class MealController {
     @PutMapping("/{id}")
     public void updateMeal(@Valid @RequestBody MealDto mealDto, @PathVariable Long id) {
         String newMealName = mealDto.getName();
-        Map<Long, Long> newIngredientsAmount = mealDto.getIngredientsQuantities();
+        List<IngredientStore> newIngredientsAmount = mapUtil.mapToIngredientStoreList(mealDto.getIngredientsStore());
 
         mealService.updateMeal(id, newMealName, newIngredientsAmount);
     }

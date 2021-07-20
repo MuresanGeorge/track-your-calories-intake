@@ -100,22 +100,20 @@ public class IngredientService {
     }
 
     /**
-     * This method is used to calculate the total number of calories per 100g of recipe based on all the ingredients and
-     * the calories in the ingredients
+     * This method is used to calculate the total number of calories of a recipe based on all the ingredients and
+     * the quantities of the ingredients
      *
      * @param ingredientsQuantities the map with ingredient id and ingredient quantity
      * @return the number of calories in 100g of recipe
      */
     public int calculateTotalCalories(Map<Long, Long> ingredientsQuantities) {
         int calories = 0;
-        int totalAmountOfFood = 0;
 
         for (Map.Entry<Long, Long> pair : ingredientsQuantities.entrySet()) {
             Ingredient ingredient = readIngredient(pair.getKey());
             calories += (pair.getValue() * getNumberOfCaloriesInIngredient(ingredient)) / 100;
-            totalAmountOfFood += pair.getValue();
         }
-        return calories * 100 / totalAmountOfFood;
+        return calories;
     }
 
     private void checkIfIngredientExists(String name, String brand) {

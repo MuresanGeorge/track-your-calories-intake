@@ -4,12 +4,12 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
-
 @Data
-@AllArgsConstructor
 @NoArgsConstructor
-public class IngredientResponse {
+@AllArgsConstructor
+public class IngredientStoreDto {
 
-    private List<IngredientDto> ingredients;
+    private long ingredientId;
+
+    private int amount;
 }

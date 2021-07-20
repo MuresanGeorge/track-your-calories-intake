@@ -2,16 +2,16 @@ package com.george.tracker.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToOne;
+import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
@@ -40,8 +40,9 @@ public class Meal {
     private Set<IngredientStore> ingredientsStore = new HashSet<>();
 
     @ToString.Exclude
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Consumption consumption;
+    @EqualsAndHashCode.Exclude
+    @ManyToMany(mappedBy = "meals")
+    private Set<Consumption> consumptions = new HashSet<>();
 
     public void addIngredientStore(IngredientStore ingredientStore) {
         ingredientsStore.add(ingredientStore);

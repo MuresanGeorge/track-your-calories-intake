@@ -1,4 +1,4 @@
-package com.george.tracker.transport;
+package com.george.tracker.transport.recipe;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -10,14 +10,11 @@ import javax.validation.constraints.PositiveOrZero;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class IngredientStockDto {
+public class RecipeQuantityDto {
 
-    @NotNull
-    private long ingredientId;
+    @NotNull(message = "The recipe id should not be null")
+    private int recipeId;
 
-    @NotNull
-    private long recipeId;
-
-    @PositiveOrZero(message = "The quantity should be greater than 0 or equal to 0")
+    @PositiveOrZero(message = "The quantity of the recipe should not be less than 0")
     private int quantity;
 }

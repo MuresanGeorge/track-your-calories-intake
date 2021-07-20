@@ -8,6 +8,7 @@ import com.george.tracker.exception.IngredientStockNotFoundException;
 import com.george.tracker.exception.IngredientStoreNotFoundException;
 import com.george.tracker.exception.MealNotFoundException;
 import com.george.tracker.exception.RecipeNotFoundException;
+import com.george.tracker.exception.RecipeNotUpdatedException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -92,6 +93,13 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     public ResponseEntity<ApiError> handleIngredientDuplicateException(Exception ex) {
         ApiError apiError = new ApiError(HttpStatus.CONFLICT.value(), ex.getMessage(), LocalDateTime.now(),
                 "The ingredient already exists");
+        return new ResponseEntity<>(apiError, HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler({RecipeNotUpdatedException.class})
+    public ResponseEntity<ApiError> handleRecipeNotUpdatedException(Exception ex) {
+        ApiError apiError = new ApiError(HttpStatus.CONFLICT.value(), ex.getMessage(), LocalDateTime.now(),
+                "Please update the calories per 100g of recipe");
         return new ResponseEntity<>(apiError, HttpStatus.CONFLICT);
     }
 
